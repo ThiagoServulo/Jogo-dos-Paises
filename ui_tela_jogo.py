@@ -3,6 +3,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2 import QtWidgets
 from bs4 import BeautifulSoup
+from ui_tela_resultado import CriarTelaResultado
 import numpy as np
 import urllib.request
 import cv2
@@ -39,6 +40,7 @@ paises = ['Canadá', 'Estado Unidos', 'México', 'Austrália', 'Estados Federado
 
 class Ui_tela_jogo(object):
 
+    pontuacao = 0
     pais = ''
     lista_paises = []
     paises_sorteados = []
@@ -51,6 +53,7 @@ class Ui_tela_jogo(object):
         icon = QIcon()
         icon.addFile(u"icone_globo.png", QSize(), QIcon.Normal, QIcon.Off)
         tela_jogo.setWindowIcon(icon)
+        self.tela_resultado = CriarTelaResultado()
         self.centralwidget = QWidget(tela_jogo)
         self.centralwidget.setObjectName(u"centralwidget")
         self.groupBox = QGroupBox(self.centralwidget)
@@ -94,10 +97,10 @@ class Ui_tela_jogo(object):
         self.botao_meio_a_meio.setObjectName(u"botao_meio_a_meio")
         self.botao_meio_a_meio.setGeometry(QRect(180, 380, 121, 41))
         self.botao_meio_a_meio.setFont(font1)
-        self.botao_arriscar = QPushButton(self.groupBox)
-        self.botao_arriscar.setObjectName(u"botao_arriscar")
-        self.botao_arriscar.setGeometry(QRect(320, 380, 121, 41))
-        self.botao_arriscar.setFont(font1)
+        self.botao_confirmar = QPushButton(self.groupBox)
+        self.botao_confirmar.setObjectName(u"botao_arriscar")
+        self.botao_confirmar.setGeometry(QRect(320, 380, 121, 41))
+        self.botao_confirmar.setFont(font1)
         tela_jogo.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(tela_jogo)
         self.menubar.setObjectName(u"menubar")
@@ -106,29 +109,119 @@ class Ui_tela_jogo(object):
         self.menuJogo.setObjectName(u"menuJogo")
         tela_jogo.setMenuBar(self.menubar)
 
+        self.tela_resultado.botao_sair.clicked.connect(self.tela_resultado.close)
+        self.tela_resultado.botao_novo_jogo.clicked.connect(self.novo_jogo)
+        self.botao_pular.clicked.connect(self.pular)
+        self.botao_confirmar.clicked.connect(self.confirmar_opcao)
+        self.botao_meio_a_meio.clicked.connect(self.eliminar_duas_opcoes)
         self.sortear_paises()
         self.buscar_bandeira()
-        self.label_bandeira.setPixmap(QPixmap(u"bandeira.png"))
 
         self.menubar.addAction(self.menuJogo.menuAction())
         self.retranslateUi(tela_jogo)
         QMetaObject.connectSlotsByName(tela_jogo)
     # setupUi
 
+    def novo_jogo(self):
+        Ui_tela_jogo.pontuacao = 0
+        Ui_tela_jogo.lista_paises = []
+        self.zerar_dados()
+        self.sortear_paises()
+        self.buscar_bandeira()
+        self.tela_resultado.hide()
+        self.radio_button_1.setChecked(False)
+        self.radio_button_2.setChecked(False)
+        self.radio_button_3.setChecked(False)
+        self.radio_button_4.setChecked(False)
+        self.botao_pular.setEnabled(True)
+        self.botao_meio_a_meio.setEnabled(True)
+    # novo_jogo
+
+    def mostra_tela_resultado(self):
+        self.tela_resultado.label_resultado.setText(f'Sua potuação final foi {Ui_tela_jogo.pontuacao}')
+        self.tela_resultado.show()
+    # mostra_tela_resultado
+
+    def pular(self):
+        self.botao_pular.setEnabled(False)
+        Ui_tela_jogo.pontuacao += 1
+        self.zerar_dados()
+        self.sortear_paises()
+        self.buscar_bandeira()
+    # pular
+
+    def eliminar_duas_opcoes(self):
+        opcoes = [0, 1, 2, 3]
+        random.shuffle(opcoes)
+        print(opcoes)
+        opcoes_eliminadas = 0
+        while opcoes_eliminadas < 2:
+            opcao = opcoes.pop()
+            print(opcao)
+            if Ui_tela_jogo.paises_sorteados[opcao] != Ui_tela_jogo.pais:
+                opcoes_eliminadas += 1
+                if opcao == 0:
+                    self.radio_button_1.setEnabled(False)
+                elif opcao == 1:
+                    self.radio_button_2.setEnabled(False)
+                elif opcao == 2:
+                    self.radio_button_3.setEnabled(False)
+                elif opcao == 3:
+                    self.radio_button_4.setEnabled(False)
+        self.botao_meio_a_meio.setEnabled(False)
+    # eliminar_duas_opcoes
+
+    def confirmar_opcao(self):
+        if self.radio_button_1.isChecked():
+            self.radio_button_1.setEnabled(False)
+            opcao = 0
+        elif self.radio_button_2.isChecked():
+            self.radio_button_2.setEnabled(False)
+            opcao = 1
+        elif self.radio_button_3.isChecked():
+            self.radio_button_3.setEnabled(False)
+            opcao = 2
+        elif self.radio_button_4.isChecked():
+            self.radio_button_4.setEnabled(False)
+            opcao = 3
+
+        if Ui_tela_jogo.paises_sorteados[opcao] == Ui_tela_jogo.pais:
+            if len(Ui_tela_jogo.paises_sorteados) >= (len(paises) - 5):
+                print('Você ganhou')
+            Ui_tela_jogo.pontuacao += 1
+            self.zerar_dados()
+            self.sortear_paises()
+            self.buscar_bandeira()
+        else:
+            self.mostra_tela_resultado()
+            Ui_tela_jogo.pontuacao = 0
+            Ui_tela_jogo.lista_paises = []
+            self.zerar_dados()
+    # confirmar_opcao
+
     def retranslateUi(self, tela_jogo):
         tela_jogo.setWindowTitle(QCoreApplication.translate("tela_jogo", u"Jogo dos Países", None))
         self.groupBox.setTitle("")
         self.label_bandeira.setText("")
         self.label_pergunta.setText(QCoreApplication.translate("tela_jogo", u"Essa bandeira é de qual país ?", None))
-        # self.radio_button_1.setText("")
-        # self.radio_button_2.setText("")
-        # self.radio_button_3.setText("")
-        # self.radio_button_4.setText("")
         self.botao_pular.setText(QCoreApplication.translate("tela_jogo", u"Pular", None))
         self.botao_meio_a_meio.setText(QCoreApplication.translate("tela_jogo", u"Meio a Meio", None))
-        self.botao_arriscar.setText(QCoreApplication.translate("tela_jogo", u"Arriscar", None))
+        self.botao_confirmar.setText(QCoreApplication.translate("tela_jogo", u"Confirmar", None))
         self.menuJogo.setTitle(QCoreApplication.translate("tela_jogo", u"Jogo", None))
     # retranslateUi
+
+    def zerar_dados(self):
+        Ui_tela_jogo.pais = ''
+        Ui_tela_jogo.paises_sorteados = []
+        self.radio_button_1.setEnabled(True)
+        self.radio_button_2.setEnabled(True)
+        self.radio_button_3.setEnabled(True)
+        self.radio_button_4.setEnabled(True)
+        self.radio_button_1.setChecked(False)
+        self.radio_button_2.setChecked(False)
+        self.radio_button_3.setChecked(False)
+        self.radio_button_4.setChecked(False)
+    # zerar_dados
 
     def sortear_paises(self):
         while True:
@@ -169,6 +262,7 @@ class Ui_tela_jogo(object):
         image = np.asarray(bytearray(resp.read()), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
         cv2.imwrite("bandeira.png", image)
+        self.label_bandeira.setPixmap(QPixmap(u"bandeira.png"))
     # buscar_bandeira
 
 
