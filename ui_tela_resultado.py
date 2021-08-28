@@ -8,10 +8,11 @@ class Ui_tela_resultado(object):
     def setupUi(self, tela_resultado):
         if not tela_resultado.objectName():
             tela_resultado.setObjectName(u"tela_resultado")
-        tela_resultado.resize(281, 192)
-        tela_resultado.setMaximumSize(QSize(300, 300))
+        tela_resultado.resize(290, 180)
+        tela_resultado.setMinimumSize(QSize(290, 180))
+        tela_resultado.setMaximumSize(QSize(290, 180))
         icon = QIcon()
-        icon.addFile(u"icone_globo.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"icone_globo.ico", QSize(), QIcon.Normal, QIcon.Off)
         tela_resultado.setWindowIcon(icon)
         self.centralwidget = QWidget(tela_resultado)
         self.centralwidget.setObjectName(u"centralwidget")

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>508</height>
+    <width>521</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -147,9 +147,9 @@
     <widget class="QPushButton" name="botao_pular">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>380</y>
-       <width>121</width>
+       <width>100</width>
        <height>41</height>
       </rect>
      </property>
@@ -165,9 +165,9 @@
     <widget class="QPushButton" name="botao_meio_a_meio">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>130</x>
        <y>380</y>
-       <width>121</width>
+       <width>100</width>
        <height>41</height>
       </rect>
      </property>
@@ -183,9 +183,9 @@
     <widget class="QPushButton" name="botao_arriscar">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>350</x>
        <y>380</y>
-       <width>121</width>
+       <width>100</width>
        <height>41</height>
       </rect>
      </property>
@@ -195,26 +195,28 @@
       </font>
      </property>
      <property name="text">
-      <string>Arriscar</string>
+      <string>Confirmar</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="botao_dica">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>380</y>
+       <width>100</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Dica</string>
      </property>
     </widget>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>522</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuJogo">
-    <property name="title">
-     <string>Jogo</string>
-    </property>
-   </widget>
-   <addaction name="menuJogo"/>
   </widget>
  </widget>
  <resources/>
